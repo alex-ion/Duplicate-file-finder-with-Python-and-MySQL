@@ -158,10 +158,12 @@ def inserare_fisiere_DB():
 
 def main():
     conectare_db()
-##    incarcare_fisiere() #Se ruleaza o singura data!!!
-##    inserare_fisiere_DB() #Se ruleaza o singura data!!!
+    incarcare_fisiere() #Se ruleaza o singura data!!!
+    inserare_fisiere_DB() #Se ruleaza o singura data!!!
     parcurgere_lista_DB()
-
+    query = 'SELECT SUM(run_time) FROM run_times'
+    total_time = round (query_with_reply(query)[0][0] / 60)
+    print ('Verificarea fisierelor a durat {0} minute'.format(total_time))
 
 def parcurgere_lista_DB():
     global DB_connected
@@ -214,21 +216,21 @@ def parcurgere_lista_DB():
 
 def Verificare(nume_fisier1, path1, size1, creation_date1, modify_date1, nume_fisier2, path2, size2, creation_date2, modify_date2):
     if nume_fisier1 == nume_fisier2 and size1 == size2:
-        query = 'INSERT INTO duplicates VALUES (default,"{0}","{1}","{2}")'.format(path1.replace('\\','\\\\') + '\\' + nume_fisier1, path2.replace('\\','\\\\') + '\\' + nume_fisier2, 'fisiere identice')
+        query = 'INSERT INTO duplicates VALUES (default,"{0}","{1}","{2}")'.format(path1.replace('\\','\\\\') + '\\\\' + nume_fisier1, path2.replace('\\','\\\\') + '\\\\' + nume_fisier2, 'fisiere identice')
         query_without_reply(query)
         scriere_log(str(time.ctime()) + ": S-au gasit 2 fisiere identice: " + nume_fisier1)
         scriere_log(path1 + '\\' + nume_fisier1)
         scriere_log(path2 + '\\' + nume_fisier2 + "\n")
 
     elif creation_date1 == creation_date2 and size1 == size2:
-        query = 'INSERT INTO duplicates VALUES (default,"{0}","{1}","{2}")'.format(path1.replace('\\','\\\\') + '\\' + nume_fisier1, path2.replace('\\','\\\\') + '\\' + nume_fisier2, 'fisierele au aceeasi data de creare')
+        query = 'INSERT INTO duplicates VALUES (default,"{0}","{1}","{2}")'.format(path1.replace('\\','\\\\') + '\\\\' + nume_fisier1, path2.replace('\\','\\\\') + '\\\\' + nume_fisier2, 'fisierele au aceeasi data de creare')
         query_without_reply(query)
         scriere_log(str(time.ctime()) + ": S-au gasit 2 fisiere care au aceeasi data de creare: ")
         scriere_log(path1 + '\\' + nume_fisier1)
         scriere_log(path2 + '\\' + nume_fisier2 + "\n")
 
     elif modify_date1 == modify_date2 and size1 == size2:
-        query = 'INSERT INTO duplicates VALUES (default,"{0}","{1}","{2}")'.format(path1.replace('\\','\\\\') + '\\' + nume_fisier1, path2.replace('\\','\\\\') + '\\' + nume_fisier2, 'fisierele au aceeasi data de modificare')
+        query = 'INSERT INTO duplicates VALUES (default,"{0}","{1}","{2}")'.format(path1.replace('\\','\\\\') + '\\\\' + nume_fisier1, path2.replace('\\','\\\\') + '\\\\' + nume_fisier2, 'fisierele au aceeasi data de modificare')
         query_without_reply(query)
         scriere_log(str(time.ctime()) + ": S-au gasit 2 fisiere care au aceeasi data de modificare: " + nume_fisier1)
         scriere_log(path1 + '\\' + nume_fisier1)
@@ -237,3 +239,4 @@ def Verificare(nume_fisier1, path1, size1, creation_date1, modify_date1, nume_fi
 
 main()
 db.close()
+input("Apasa <enter> pentru a iesi")
