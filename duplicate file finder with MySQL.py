@@ -29,9 +29,9 @@ class Files:
         self.nume_fisier_trunchiat = file[0:len(file) - 4]
         self.path = path.replace('\\','\\\\')
         self.size = ""
-        self.size = os.path.getsize(os.path.join(path, self.nume_fisier))
-        self.creation_date = time.ctime(os.path.getctime(os.path.join(path, self.nume_fisier)))
-        self.modify_date = time.ctime(os.path.getmtime(os.path.join(path, self.nume_fisier)))
+        self.size = os.path.getsize(os.path.join(self.path, self.nume_fisier))
+        self.creation_date = time.ctime(os.path.getctime(os.path.join(self.path, self.nume_fisier)))
+        self.modify_date = time.ctime(os.path.getmtime(os.path.join(self.path, self.nume_fisier)))
         files_list.append(self)
         Files.files_total += 1
 
@@ -42,12 +42,15 @@ def Import(cale):
         for (path, folders, files) in os.walk(cale):
             for folder in folders:
                 if folder not in lista_ignorare:
-                    obiect = len(globals())
-                    globals()[obiect] = Folders(folder, path)
+                    try:
+                        obiect = len(globals())
+                        globals()[obiect] = Folders(folder, path)
+                    except Exception as error:
+                        print ('A aparut eroarea: ' + str(error))
             for file in files:
                 if path not in lista_ignorare:
-                    obiect = len(globals())
                     try:
+                        obiect = len(globals())
                         globals()[obiect] = Files(file, path)
                     except Exception as error:
                         print ('A aparut eroarea: ' + str(error))
