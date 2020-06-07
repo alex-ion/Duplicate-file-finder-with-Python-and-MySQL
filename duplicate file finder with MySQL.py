@@ -38,18 +38,19 @@ class Files:
 
 def Import(cale):
     global lista_ignorare, files_list
-    for (path, folders, files) in os.walk(cale):
-        for folder in folders:
-            if folder not in lista_ignorare:
-                obiect = len(globals())
-                globals()[obiect] = Folders(folder, path)
-        for file in files:
-            if path not in lista_ignorare:
-                obiect = len(globals())
-                try:
-                    globals()[obiect] = Files(file, path)
-                except Exception as error:
-                    print ('A aparut eroarea: ' + str(error))
+    if DB_connected:
+        for (path, folders, files) in os.walk(cale):
+            for folder in folders:
+                if folder not in lista_ignorare:
+                    obiect = len(globals())
+                    globals()[obiect] = Folders(folder, path)
+            for file in files:
+                if path not in lista_ignorare:
+                    obiect = len(globals())
+                    try:
+                        globals()[obiect] = Files(file, path)
+                    except Exception as error:
+                        print ('A aparut eroarea: ' + str(error))
     scriere_log(str(time.ctime()) + ": Din " + str(cale) + " s-au importat " + str(len(folders_list)) + " foldere")
     scriere_log(str(time.ctime()) + ": Din " + str(cale) + " s-au importat " + str(len(files_list)) + " fisiere")
 
@@ -98,10 +99,10 @@ def incarcare_fisiere():
 
 
 def scriere_log(mesaj):
-    LogFile = open("LogFileDuplicateFileFinder.txt", "a")
-    LogFile.write(mesaj + "\n")
+##    LogFile = open("LogFileDuplicateFileFinder.txt", "a")
+##    LogFile.write(mesaj + "\n")
     print (mesaj)
-    LogFile.close()
+##    LogFile.close()
 
 
 def conectare_db():
@@ -156,9 +157,9 @@ def inserare_fisiere_DB():
 
 
 def main():
-    # incarcare_fisiere() #Se ruleaza o singura data!!!
     conectare_db()
-    # inserare_fisiere_DB() #Se ruleaza o singura data!!!
+##    incarcare_fisiere() #Se ruleaza o singura data!!!
+##    inserare_fisiere_DB() #Se ruleaza o singura data!!!
     parcurgere_lista_DB()
 
 
@@ -198,23 +199,37 @@ def parcurgere_lista_DB():
             query = "DELETE FROM fisier WHERE id_fisier = {0}".format(iteratie1)
             query_without_reply(query)
 
-    timp_doi = time.time()
-    diferenta_timp = timp_doi - primul_timp
+            timp_doi = time.time() #resetare parametru final
+            diferenta_timp = timp_doi - primul_timp
+            primul_timp = time.time() #resetare parametru initial
+            query = 'INSERT INTO run_times values (default,"{0}")'.format(diferenta_timp)
+            query_without_reply(query)
+            
+            
+
+    
+    
     print ("Executia a durat: " + str(diferenta_timp) + " secunde")
 
 
 def Verificare(nume_fisier1, path1, size1, creation_date1, modify_date1, nume_fisier2, path2, size2, creation_date2, modify_date2):
     if nume_fisier1 == nume_fisier2 and size1 == size2:
+        query = 'INSERT INTO duplicates VALUES (default,"{0}","{1}","{2}")'.format(path1.replace('\\','\\\\') + '\\' + nume_fisier1, path2.replace('\\','\\\\') + '\\' + nume_fisier2, 'fisiere identice')
+        query_without_reply(query)
         scriere_log(str(time.ctime()) + ": S-au gasit 2 fisiere identice: " + nume_fisier1)
         scriere_log(path1 + '\\' + nume_fisier1)
         scriere_log(path2 + '\\' + nume_fisier2 + "\n")
 
     elif creation_date1 == creation_date2 and size1 == size2:
+        query = 'INSERT INTO duplicates VALUES (default,"{0}","{1}","{2}")'.format(path1.replace('\\','\\\\') + '\\' + nume_fisier1, path2.replace('\\','\\\\') + '\\' + nume_fisier2, 'fisierele au aceeasi data de creare')
+        query_without_reply(query)
         scriere_log(str(time.ctime()) + ": S-au gasit 2 fisiere care au aceeasi data de creare: ")
         scriere_log(path1 + '\\' + nume_fisier1)
         scriere_log(path2 + '\\' + nume_fisier2 + "\n")
 
     elif modify_date1 == modify_date2 and size1 == size2:
+        query = 'INSERT INTO duplicates VALUES (default,"{0}","{1}","{2}")'.format(path1.replace('\\','\\\\') + '\\' + nume_fisier1, path2.replace('\\','\\\\') + '\\' + nume_fisier2, 'fisierele au aceeasi data de modificare')
+        query_without_reply(query)
         scriere_log(str(time.ctime()) + ": S-au gasit 2 fisiere care au aceeasi data de modificare: " + nume_fisier1)
         scriere_log(path1 + '\\' + nume_fisier1)
         scriere_log(path2 + '\\' + nume_fisier2 + "\n")

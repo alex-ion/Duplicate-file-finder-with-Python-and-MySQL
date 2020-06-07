@@ -13,19 +13,23 @@ PRIMARY KEY (id_fisier)
 
 
 
-CREATE TABLE verificat(
+CREATE TABLE duplicates(
 id_verificare INT AUTO_INCREMENT,
-id_fisier1 INT,
-id_fisier2 INT,
 nume_fisier1 VARCHAR(400),
 nume_fisier2 VARCHAR(400),
 rezultat VARCHAR(400),
-descriere VARCHAR(400),
 PRIMARY KEY (id_verificare)
 ) ENGINE = INNODB;
 
+CREATE TABLE run_times (
+id INT AUTO_INCREMENT,
+run_time DOUBLE(16,14),
+PRIMARY KEY (id)
+) ENGINE = INNODB;
 
 
 TRUNCATE TABLE fisier;
+TRUNCATE TABLE duplicates;
+TRUNCATE TABLE run_times;
 
-DELETE FROM fisier WHERE id_fisier > 100;
+SELECT SUM(run_time) FROM run_times;
