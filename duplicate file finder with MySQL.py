@@ -161,8 +161,8 @@ def inserare_fisiere_DB():
 
 def main():
     conectare_db()
-    incarcare_fisiere() #Se ruleaza o singura data!!!
-    inserare_fisiere_DB() #Se ruleaza o singura data!!!
+##    incarcare_fisiere() #Se ruleaza o singura data!!!
+##    inserare_fisiere_DB() #Se ruleaza o singura data!!!
     parcurgere_lista_DB()
     query = 'SELECT SUM(run_time) FROM run_times'
     total_time = round (query_with_reply(query)[0][0] / 60)
@@ -207,7 +207,7 @@ def parcurgere_lista_DB():
             timp_doi = time.time() #resetare parametru final
             diferenta_timp = timp_doi - primul_timp
             primul_timp = time.time() #resetare parametru initial
-            query = 'INSERT INTO run_times values (default,"{0}")'.format(diferenta_timp)
+            query = 'INSERT INTO run_times values (default,"{0}")'.format(round(diferenta_timp,14))
             query_without_reply(query)
             
             
