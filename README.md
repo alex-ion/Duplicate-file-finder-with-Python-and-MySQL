@@ -5,3 +5,8 @@ in a Python script for my very first project of this type.
 
 The advantage of doing this, is that even if the script fails, the first time it is manually started, it knows at what point it 
 should start the checks.
+
+The logic used to consider that 2 files are duplicated is:
+- those files (from different folders) have the same name and same size
+- those files have the same creation date and same size
+- those files have the same modify date and same size
